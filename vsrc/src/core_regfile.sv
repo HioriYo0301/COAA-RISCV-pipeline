@@ -13,11 +13,9 @@ module core_regfile(
     output logic [63:0]       rdata2,
     output logic [31:0][63:0] regs_dbg
 );
-    integer i;
-
     always_ff @(posedge clk) begin
         if (reset) begin
-            for (i = 0; i < 32; i++) begin
+            for (int i = 0; i < 32; i++) begin
                 regs_dbg[i] <= 64'b0;
             end
         end else if (wen && waddr != 5'b0) begin

@@ -8,10 +8,8 @@ module core_hazard_unit(
     input  logic [4:0] rs2_id,
     output logic       load_use_hazard
 );
-    always_comb begin
-        load_use_hazard = mem_read_ex && (rd_ex != 5'b0) &&
-                          ((rd_ex == rs1_id) || (rd_ex == rs2_id));
-    end
+    assign load_use_hazard = mem_read_ex && (rd_ex != 5'b0) &&
+                             ((rd_ex == rs1_id) || (rd_ex == rs2_id));
 endmodule
 
 `endif
