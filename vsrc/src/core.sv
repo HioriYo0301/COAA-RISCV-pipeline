@@ -3,11 +3,11 @@
 
 `ifdef VERILATOR
 `include "include/common.sv"
-`include "src/core_decode.sv"
-`include "src/core_alu.sv"
-`include "src/core_regfile.sv"
-`include "src/core_hazard_unit.sv"
-`include "src/core_forwarding_unit.sv"
+`include "src/cpu_decode.sv"
+`include "src/cpu_alu.sv"
+`include "src/cpu_regfile.sv"
+`include "src/cpu_hazard_unit.sv"
+`include "src/cpu_forwarding_unit.sv"
 `endif
 
 module core import common::*;(
@@ -155,7 +155,7 @@ module core import common::*;(
     logic [63:0] rs1_data_id_r;
     logic [63:0] rs2_data_id_r;
 
-    core_decode u_decode (
+    cpu_decode u_decode (
         .instr     (instr_id),
         .decode_out(decode_id)
     );
@@ -177,7 +177,7 @@ module core import common::*;(
     assign reg_write_id = decode_id.reg_write;
     assign wb_sel_id    = decode_id.wb_sel;
 
-    core_regfile u_regfile (
+    cpu_regfile u_regfile (
         .clk      (clk),
         .reset    (reset),
         .wen      (reg_write_wb_fire),
@@ -297,7 +297,7 @@ module core import common::*;(
     logic [63:0] alu_result_ex;
     logic        branch_taken_ex;
 
-    core_hazard_unit u_hazard (
+    cpu_hazard_unit u_hazard (
         .mem_read_ex     (mem_read_ex),
         .rd_ex           (rd_ex),
         .rs1_id          (rs1_id),
@@ -305,7 +305,7 @@ module core import common::*;(
         .load_use_hazard (load_use_hazard)
     );
 
-    core_forwarding_unit u_forward (
+    cpu_forwarding_unit u_forward (
         .rs1_ex           (rs1_ex),
         .rs2_ex           (rs2_ex),
         .rs1_data_ex      (rs1_data_ex),
@@ -323,7 +323,7 @@ module core import common::*;(
     assign alu_in_a_ex = use_pc_ex ? pc_ex : rs1_forwarded_ex;
     assign alu_in_b_ex = alu_src_ex ? imm_ex : rs2_forwarded_ex;
 
-    core_alu u_alu (
+    cpu_alu u_alu (
         .alu_op (alu_op_ex),
         .op_a   (alu_in_a_ex),
         .op_b   (alu_in_b_ex),
